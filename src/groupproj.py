@@ -26,169 +26,25 @@ from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 
 import matplotlib.pyplot as plt  # for data visualization
 # import plotly.express as px # for data visualization
+# import plotly.express as px # for data visualization
+import pyodbc
+from sqlite3 import Cursor
+from sqlite3 import connect
 
-import pymysql
-conn = pymysql.connect(host="127.0.0.1", user="root",
-                       password='', database="mysql")
-cursor = conn.cursor()
+#Connect to SQL server
+database = "WILLS_DB"
+server = 'DESKTOP-TUJPIMN'
+connect = pyodbc.connect("DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
+connect.autocommit = True
+cursor = connect.cursor()
 
-
-cursor = conn.cursor()
-# checks if landslide table already exists in the database
-# if it does it continues to classification
-# if not it creates the table
-cursor.execute("""
-    SELECT COUNT(*)
-    FROM information_schema.tables
-    WHERE table_name = '{0}'
-    """.format("landslide".replace('\'', '\'\'')))
-if cursor.fetchone()[0] == 1:
-    print('---------------------------------------------------------')
-    print("Using data from SQL")
-    print('---------------------------------------------------------')
-else:
-    print('---------------------------------------------------------')
-    print("Import landslide data from CSV to SQL")
-    print('---------------------------------------------------------')
-    # prompts user for location of stripped data
-    loc = input("Enter stripped data location:")
-    # D:/Downloads/Global_Landslide_Catalog_Export_stripped.csv
-    df = pd.read_csv(loc)
-
-    # creates variables
-    lat = df["latitude"]
-    lon = df["longitude"]
-    size = df["landslide_size"]
-    fat = df["fatality_count"]
-    lat = lat.to_numpy()
-    lon = lon.to_numpy()
-    # makes a coordinate numpy array out of longitude and latitude
-    coord = np.column_stack((lon, lat))
-
-    # assigns ints to size of landslides
-    landslide1 = df["landslide_size"]
-    landslide1 = landslide1.to_numpy()
-    size_array = []
-    fat_array = []
-    for word in landslide1:
-        # print(word)
-        if word == 'small':
-            word = 0
-            size_array.append(word)
-        elif word == 'medium':
-            word = 2
-            size_array.append(word)
-        elif word == 'large':
-            word = 4
-            size_array.append(word)
-        elif word == 'very_large':
-            word = 9
-            size_array.append(word)
-        elif word == 'unknown':
-            word = 0
-            size_array.append(word)
-        else:
-            word = 0
-            size_array.append(word)
-
-    # assigns int to number of fatalities for classification
-    for count in fat:
-        # print(word)
-        if count == 0:
-            word = 0
-            fat_array.append(word)
-        elif count > 0 and count < 2:
-            word = 2
-            fat_array.append(word)
-        elif count > 1 and count < 11:
-            word = 3
-            fat_array.append(word)
-        elif count > 11 and count < 31:
-            word = 5
-            fat_array.append(word)
-        elif count > 31:
-            word = 7
-            fat_array.append(word)
-        else:
-            word = 0
-            fat_array.append(word)
-
-    # combines the two numbers
-    i = 0
-    class_array = []
-    for i in range(len(fat_array)):
-        temp = fat_array[i] + size_array[i]
-        class_array.append(temp)
-
-    # used the combined two numbers to classify the level of threat
-    classification = []
-    for i in class_array:
-        if i < 2:
-            temp = 0
-            classification.append(temp)
-        elif i > 1 and i < 5:
-            temp = 1
-            classification.append(temp)
-        elif i > 4:
-            temp = 2
-            classification.append(temp)
-        else:
-            temp = 0
-            classification.append(temp)
-        # elif i > 4:
-        # temp = "high risk"
-        # classification.append(temp)
-
-    from csv import writer
-    from csv import reader
-
-    # print(len(classification))
-    classification2 = classification
-    classification2.insert(0, "classification")
-
-    # Rewrites the data to a new csv with the added classification column
-    with open('D:/Downloads/Global_Landslide_Catalog_Export_stripped.csv', encoding="utf8") as read_obj, \
-            open('D:/Downloads/Global_Landslide_Catalog_Export2.csv', 'w', newline='') as write_obj:
-        # Create a csv.reader object from the input file object
-        csv_reader = reader(read_obj)
-        # Create a csv.writer object from the output file object
-        csv_writer = writer(write_obj)
-        # Read each row of the input csv file as list
-        count = 0
-        for row in csv_reader:
-            temp = classification[count]
-            row.append(temp)
-            count = count + 1
-            # Add the updated row / list to the output file
-            csv_writer.writerow(row)
-
-    # creates new table 'landslide' in WAMP SQL server
-    cursor.execute('''
-            CREATE TABLE landslide (
-                landslide_size varchar(14),
-                fatality_count varchar(10),
-                longitude float,
-                latitude float,
-                classification int
-                )
-                ''')
-
-    df2 = pd.read_csv(r'D:/Downloads/Global_Landslide_Catalog_Export2.csv')
-    # sends new data csv to WAMP SQL server
-    for index, row in df2.iterrows():
-        cursor.execute("INSERT INTO landslide (landslide_size,fatality_count,longitude,latitude,classification) VALUES('{0}','{1}','{2}','{3}','{4}')".format(
-            row.landslide_size, row.fatality_count, row.longitude, row.latitude, row.classification))
-
-    conn.commit()
-    # deletes the second CSV and continues to classification
-    import os
-    os.remove('D:/Downloads/Global_Landslide_Catalog_Export2.csv')
-
+#Switches to new database
+switchdb = "USE "+database+";"
+cursor.execute(switchdb)
 
 # reads in the table from the databse
-df4 = pd.read_sql_query('SELECT * FROM landslide', conn)
+df4 = pd.read_sql('SELECT * FROM landslide',connect)
 
-# print(df4)
 # redoes the coordinates for nearest neighbor
 lat = df4["latitude"]
 lon = df4["longitude"]
