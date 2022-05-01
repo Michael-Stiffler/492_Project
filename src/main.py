@@ -28,7 +28,7 @@ from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 import pyodbc
 from sqlite3 import Cursor
 from sqlite3 import connect
-from CSV_to_SQL import coord, modelR
+from CSV_to_SQL import coord, modelR, modelC
 
 
 # assesses the final number and assigns a risk level
@@ -79,6 +79,16 @@ def index():
     return render_template('/index.html')
 
 
+@app.route("/predict")
+def predict():
+    return render_template('/predict.html')
+
+
+@app.route("/sandbox")
+def sandbox():
+    return render_template('/sandbox.html')
+
+
 @app.route('/datapull', methods=['GET', 'POST'])
 def datapull():
     if request.method == 'POST':
@@ -116,7 +126,7 @@ def datapull():
         print(var)
 
     #print( modelC.predict([[25.6,96]]) )
-    result = modelR.predict([[lat_in, long_in]])
+    result = modelC.predict([[lat_in, long_in]])
     fin = assess(result, var)
     print(fin)
 

@@ -44,9 +44,13 @@ function setup() {
         var country =  row.get("country_name");
         var type = row.get("type");
         var trigger = row.get("landslide_trigger");
-        var fatalities = row.get("fatalities");
+        var fatalities = row.get("fatality_count");
         var injuries = row.get("injuries");
         var size = row.get("landslide_size");
+
+        if(injuries === ""){
+            injuries = 0;
+        }
 
         var marker = L.circleMarker(new L.LatLng(lat, lon), {
                 color: 'red'
