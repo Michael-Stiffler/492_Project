@@ -31,19 +31,20 @@ import pyodbc
 from sqlite3 import Cursor
 from sqlite3 import connect
 
-#Connect to SQL server
+# Connect to SQL server
 database = "WILLS_DB"
 server = 'DESKTOP-TUJPIMN'
-connect = pyodbc.connect("DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
+connect = pyodbc.connect(
+    "DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
 connect.autocommit = True
 cursor = connect.cursor()
 
-#Switches to new database
+# Switches to new database
 switchdb = "USE "+database+";"
 cursor.execute(switchdb)
 
 # reads in the table from the databse
-df4 = pd.read_sql('SELECT * FROM landslide',connect)
+df4 = pd.read_sql('SELECT * FROM landslide', connect)
 
 # redoes the coordinates for nearest neighbor
 lat = df4["latitude"]

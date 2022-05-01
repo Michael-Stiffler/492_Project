@@ -2,9 +2,11 @@ var map;
 var canvas;
 var userMarker;
 var markers;
+var userLat = 0;
+var userLon = 0;
 
 function preload(){
-    loadedData = loadTable('../data/GLC03122015.csv', 'header');
+    loadedData = loadTable('static/data/GLC03122015.csv', 'header');
 }
 
 function setup() {
@@ -77,9 +79,11 @@ function mouseClicked() {
         }
 
         xyToLatLong = map.layerPointToLatLng(L.point(mouseX, mouseY));
+        userLat = xyToLatLong.lat;
+        userLon = xyToLatLong.lng;
         console.log("lat: " + xyToLatLong.lat + " long: " + xyToLatLong.lng);
 
-        var callBack = function () {
+        var callBack = function() {
             userMarker = L.marker(new L.LatLng(xyToLatLong.lat, xyToLatLong.lng), {}).addTo(map);
         };
         
@@ -105,6 +109,22 @@ function removeMarkers(){
 
 function insertMarkers(){
     map.addLayer(markers);
+}
+
+function runPyScript(){
+
+    var input = userLat + "#" + userLon;
+
+    var AJAXtoFlask = $.ajax({
+        type: "POST",
+        url: "/datapull",
+        async: true,
+        data: { data: input },
+        success: function(result) {
+            console.log("Result:");
+            console.log(result);
+          } 
+    });
 }
 
 
