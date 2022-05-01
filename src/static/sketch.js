@@ -6,7 +6,7 @@ var userLat = 0;
 var userLon = 0;
 
 function preload(){
-    loadedData = loadTable('static/data/GLC03122015.csv', 'header');
+    loadedData = loadTable('static/data/Global_Landslide_Catalog_Export_stripped.csv', 'header');
 }
 
 function setup() {
@@ -38,13 +38,13 @@ function setup() {
         var lat = row.get("latitude");
         var lon = row.get("longitude");
 
-        var date = row.get("date_");
-        var country =  row.get("countrynam");
-        var type = row.get("landslide_");
-        var trigger = row.get("trigger");
+        var date = row.get("date");
+        var country =  row.get("country_name");
+        var type = row.get("type");
+        var trigger = row.get("landslide_trigger");
         var fatalities = row.get("fatalities");
         var injuries = row.get("injuries");
-        var size = row.get("landslide1");
+        var size = row.get("landslide_size");
 
         var marker = L.circleMarker(new L.LatLng(lat, lon), {
                 color: 'red'
