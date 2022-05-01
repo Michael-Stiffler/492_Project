@@ -24,11 +24,13 @@ function setup() {
 
     map = L.map('map', {
         preferCanvas: true,
-        minZoom: 2,
+        minZoom: 1,
         zoomControl: false,
         attributionControl: false,
         maxBounds: bounds
     }).setView([0, 0], 1);
+
+    map.dragging.disable();
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -72,34 +74,19 @@ function draw() {
 }
 
 function mouseClicked() {
+    map.invalidateSize();
     if(keyIsDown(CONTROL)){
 
         if(userMarker){
             map.removeLayer(userMarker);
         }
 
-        xyToLatLong = map.layerPointToLatLng(L.point(mouseX, mouseY));
+        var point = L.point(mouseX, mouseY);
+        xyToLatLong = map.layerPointToLatLng(point);
         userLat = xyToLatLong.lat;
         userLon = xyToLatLong.lng;
         console.log("lat: " + xyToLatLong.lat + " long: " + xyToLatLong.lng);
-
-        var callBack = function() {
-            userMarker = L.marker(new L.LatLng(xyToLatLong.lat, xyToLatLong.lng), {}).addTo(map);
-        };
-        
-        map.whenReady(callBack);
-    }
-}
-
-function keyPressed(){
-    if(keyCode === CONTROL){
-        map.dragging.disable();
-    }
-}
-
-function keyReleased() {
-    if(keyCode === CONTROL){
-        map.dragging.enable();
+        userMarker = L.marker(new L.LatLng(xyToLatLong.lat, xyToLatLong.lng), {}).addTo(map);
     }
 }
 

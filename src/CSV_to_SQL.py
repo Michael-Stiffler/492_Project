@@ -4,9 +4,6 @@ from re import search
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.colors import ListedColormap
 from sklearn import neighbors, datasets
 
 from sklearn import datasets
@@ -26,34 +23,38 @@ from sklearn.preprocessing import OrdinalEncoder
 from sklearn.neighbors import KNeighborsClassifier  # for KNN classification
 from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 
-import matplotlib.pyplot as plt  # for data visualization
 # import plotly.express as px # for data visualization
 import pyodbc
 from sqlite3 import Cursor
 
+database = "Stiffler_DB"
+server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
+
+#database = "WILLS_DB"
+#server = 'DESKTOP-TUJPIMN'
+
 
 def connect_sql():
-    #Connect to SQL server
-    database = "WILLS_DB"
-    server = 'DESKTOP-TUJPIMN'
-    connect = pyodbc.connect("DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
+    # Connect to SQL server
+    connect = pyodbc.connect(
+        "DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
     connect.autocommit = True
     cursor = connect.cursor()
 
-    #Create database 
+    # Create database
     createdb = "IF DB_ID('"+database+"') IS NULL CREATE DATABASE "+database+";"
     cursor.execute(createdb)
 
-    #Switches to new database
+    # Switches to new database
     switchdb = "USE "+database+";"
     cursor.execute(switchdb)
 
-    #tableinfo = "CREATE TABLE dbo.landslide(landslide_size VARCHAR(14),fatality_count VARCHAR(10),date VARCHAR(15),country_name VARCHAR(30),cause VARCHAR(30),injuries VARCHAR(30),type VARCHAR(30),longitude float,latitude float,classification int);"
-    #cursor.execute(tableinfo)
+    # tableinfo = "CREATE TABLE dbo.landslide(landslide_size VARCHAR(14),fatality_count VARCHAR(10),date VARCHAR(15),country_name VARCHAR(30),cause VARCHAR(30),injuries VARCHAR(30),type VARCHAR(30),longitude float,latitude float,classification int);"
+    # cursor.execute(tableinfo)
     return cursor
 
 
-#connect to SQL server and create database/table
+# connect to SQL server and create database/table
 cursor = connect_sql()
 
 
@@ -74,14 +75,15 @@ else:
     print("Importing landslide data from CSV to SQL")
     print('---------------------------------------------------------')
     # prompts user for location of stripped data
-    #loc = input("Enter stripped data location:")
+    # loc = input("Enter stripped data location:")
     import pathlib
     path_parent = os.path.dirname(pathlib.Path(__file__).parent.resolve())
     os.chdir(path_parent)
     path = os.getcwd()
-    path = path + "/data/Global_Landslide_Catalog_Export_stripped.csv"
+    print(path)
+    path = path + "/src/static/data/Global_Landslide_Catalog_Export_stripped.csv"
     loc = path.replace("/", "\\")
-    loc2 = loc.replace(".csv","2.csv")
+    loc2 = loc.replace(".csv", "2.csv")
     # D:/Downloads/Global_Landslide_Catalog_Export_stripped.csv
     df = pd.read_csv(loc)
 
@@ -209,11 +211,7 @@ else:
     os.remove(loc2)
 
 
-
-
 # Connect to SQL server
-database = "WILLS_DB"
-server = 'DESKTOP-TUJPIMN'
 connect = pyodbc.connect(
     "DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
 connect.autocommit = True
@@ -294,12 +292,12 @@ reg2 = modelR.fit(X_train2, yR_train)
 # ---------- Step 5 - Predict class labels / target values
 # Predict on training data
 pred_labels_tr = modelC.predict(X_train2)
-#pred_values_tr = modelR.predict(X_train)
+# pred_values_tr = modelR.predict(X_train)
 pred_values_tr2 = modelR.predict(X_train2)
 
 # Predict on a test data
 pred_labels_te = modelC.predict(X_test2)
-#pred_values_te = modelR.predict(X_test)
+# pred_values_te = modelR.predict(X_test)
 pred_values_te2 = modelR.predict(X_test2)
 
 
@@ -308,43 +306,41 @@ print("Done!")
 # ---------- Step 6 - Print model results
 # Basic info about the model
 # print('---------------------------------------------------------')
-#print('****************** KNN Classification ******************')
-#print('Classes: ', clf.classes_)
-#print('Effective Metric: ', clf.effective_metric_)
-#print('Effective Metric Params: ', clf.effective_metric_params_)
-#print('No. of Samples Fit: ', clf.n_samples_fit_)
-#print('Outputs 2D: ', clf.outputs_2d_)
+# print('****************** KNN Classification ******************')
+# print('Classes: ', clf.classes_)
+# print('Effective Metric: ', clf.effective_metric_)
+# print('Effective Metric Params: ', clf.effective_metric_params_)
+# print('No. of Samples Fit: ', clf.n_samples_fit_)
+# print('Outputs 2D: ', clf.outputs_2d_)
 # print('--------------------------------------------------------')
 # print("")
 
-#print('*************** Evaluation on Test Data ***************')
-#scoreC_te = modelC.score(X_test2, yC_test)
-#print('Accuracy Score: ', scoreC_te)
+# print('*************** Evaluation on Test Data ***************')
+# scoreC_te = modelC.score(X_test2, yC_test)
+# print('Accuracy Score: ', scoreC_te)
 # Look at classification report to evaluate the model
-#print(classification_report(yC_test, pred_labels_te))
+# print(classification_report(yC_test, pred_labels_te))
 # print('--------------------------------------------------------')
 # print("")
 
-#print('*************** Evaluation on Training Data ***************')
-#scoreC_tr = modelC.score(X_train2, yC_train)
-#print('Accuracy Score: ', scoreC_tr)
+# print('*************** Evaluation on Training Data ***************')
+# scoreC_tr = modelC.score(X_train2, yC_train)
+# print('Accuracy Score: ', scoreC_tr)
 # Look at classification report to evaluate the model
-#print(classification_report(yC_train, pred_labels_tr))
+# print(classification_report(yC_train, pred_labels_tr))
 # print('---------------------------------------------------------')
 
 
 # Basic info about the model
 # print("")
-#print('****************** KNN Regression ******************')
-#print('Effective Metric: ', reg2.effective_metric_)
-#print('Effective Metric Params: ', reg2.effective_metric_params_)
-#print('No. of Samples Fit: ', reg2.n_samples_fit_)
+# print('****************** KNN Regression ******************')
+# print('Effective Metric: ', reg2.effective_metric_)
+# print('Effective Metric Params: ', reg2.effective_metric_params_)
+# print('No. of Samples Fit: ', reg2.n_samples_fit_)
 # print("")
-#scoreR_te = modelR.score(X_test2, yR_test)
-#print('Test Accuracy Score: ', scoreR_te)
-#scoreR_tr = modelR.score(X_train2, yR_train)
-#print('Training Accuracy Score: ', scoreR_tr)
+# scoreR_te = modelR.score(X_test2, yR_test)
+# print('Test Accuracy Score: ', scoreR_te)
+# scoreR_tr = modelR.score(X_train2, yR_train)
+# print('Training Accuracy Score: ', scoreR_tr)
 
 # print('---------------------------------------------------------')
-
-

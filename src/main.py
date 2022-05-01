@@ -1,14 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, request, make_response, jsonify
 from flask import make_response
 from waitress import serve
+
 from math import sqrt
 from re import search
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-from matplotlib.colors import ListedColormap
 from sklearn import neighbors, datasets
 
 from sklearn import datasets
@@ -27,17 +25,13 @@ from sklearn.preprocessing import OrdinalEncoder
 from sklearn.neighbors import KNeighborsClassifier  # for KNN classification
 from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 
-import matplotlib.pyplot as plt  # for data visualization
-# import plotly.express as px # for data visualization
-# import plotly.express as px # for data visualization
 import pyodbc
 from sqlite3 import Cursor
 from sqlite3 import connect
 from CSV_to_SQL import coord, modelR
 
 
-
-        # assesses the final number and assigns a risk level
+# assesses the final number and assigns a risk level
 def assess(result, var):
     result[0] = result[0] - var
     print(result[0])
@@ -48,8 +42,8 @@ def assess(result, var):
     elif result[0] >= 1.1:
         return "high risk"
 
-    # calculate the Euclidean distance between two vectors
 
+# calculate the Euclidean distance between two vectors
 def euclidean_distance(row1, row2):
     distance = 0.0
     x = np.array2string(row2)
@@ -64,7 +58,7 @@ def euclidean_distance(row1, row2):
     return sqrt(distance)
 
 
-    # Locate the most similar neighbors
+# Locate the most similar neighbors
 def get_neighbors(train, test_row, num_neighbors):
     distances = list()
     for train_row in train:
@@ -97,7 +91,6 @@ def datapull():
     lat_in = x[0]
     long_in = x[1]
 
-
     lat_in = float(lat_in)
     long_in = float(long_in)
 
@@ -122,12 +115,10 @@ def datapull():
             var = var
         print(var)
 
-
     #print( modelC.predict([[25.6,96]]) )
     result = modelR.predict([[lat_in, long_in]])
     fin = assess(result, var)
     print(fin)
-    
 
     resp = jsonify(fin)
     return resp
