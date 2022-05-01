@@ -11,7 +11,7 @@ def index():
 
 
 @app.route('/datapull', methods=['GET', 'POST'])
-def datepull():
+def datapull():
     if request.method == 'POST':
         datafromjs = request.form['data']
         print(datafromjs)
