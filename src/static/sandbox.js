@@ -1,9 +1,6 @@
 var map;
 var canvas;
-var userMarker;
 var markers;
-var userLat = 0;
-var userLon = 0;
 
 function preload(){
     loadedData = loadTable('static/data/Global_Landslide_Catalog_Export_stripped.csv', 'header');
@@ -24,14 +21,13 @@ function setup() {
 
     map = L.map('map', {
         preferCanvas: true,
-        minZoom: 1,
+        minZoom: 2,
         zoomControl: false,
         attributionControl: false,
         maxBounds: bounds
     }).setView([0, 0], 1);
 
     map.invalidateSize();
-    map.dragging.disable();
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -84,41 +80,6 @@ function setup() {
 }
 
 function draw() {
-}
-
-function mouseClicked() {
-    map.invalidateSize();
-    if(keyIsDown(CONTROL)){
-
-        if(userMarker){
-            map.removeLayer(userMarker);
-        }
-
-        var point = L.point(mouseX, mouseY);
-        xyToLatLong = map.layerPointToLatLng(point);
-        userLat = xyToLatLong.lat;
-        userLon = xyToLatLong.lng;
-        console.log("lat: " + xyToLatLong.lat + " long: " + xyToLatLong.lng);
-        runPyScript();
-    }
-}
-
-function runPyScript(){
-
-    var input = userLat + "#" + userLon;
-
-    var AJAXtoFlask = $.ajax({
-        type: "POST",
-        url: "/datapull",
-        async: true,
-        data: { data: input },
-        success: function(result) {
-            console.log(result);
-            userMarker = L.marker(new L.LatLng(userLat, userLon), {}).addTo(map)
-            .bindPopup("User Selected Location: <br>Lat: " + userLat + "<br>Lon: " + userLon + "<br>Is: " + result)
-            .openPopup();
-        } 
-    });
 }
 
 

@@ -45,7 +45,12 @@
       crossorigin=""
     ></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.3.0/dist/leaflet.markercluster.js"></script>
-    <script src="{{url_for('static', filename='sketch.js')}}"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+    <script src="{{url_for('static', filename='sandbox.js')}}"></script>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
@@ -84,9 +89,5 @@
     <div id="container" class="container">
       <div id="map" class="map"></div>
     </div>
-
-    <button id="remove" onclick="removeMarkers()">Remove all markers</button>
-    <button id="insert" onclick="insertMarkers()">Insert all markers</button>
-    <button id="submitbutton" onclick="runPyScript()">Send</button>
   </body>
 </html>

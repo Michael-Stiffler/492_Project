@@ -93,45 +93,38 @@ def sandbox():
 def datapull():
     if request.method == 'POST':
         datafromjs = request.form['data']
-        print(datafromjs)
 
-    x = datafromjs.split("#", 1)
+        x = datafromjs.split("#", 1)
 
-    # prompts user for input for latitude and longitude
-    lat_in = x[0]
-    long_in = x[1]
+        lat_in = float(x[0])
+        long_in = float(x[1])
 
-    lat_in = float(lat_in)
-    long_in = float(long_in)
+        # for row in coord:
+        #     distance = euclidean_distance([lat_in, long_in], row)
+        #     # print(row)
+        #     # print(distance)
 
-    for row in coord:
-        distance = euclidean_distance([lat_in, long_in], row)
-        # print(row)
-        # print(distance)
+        neighbors = get_neighbors(coord, [lat_in, long_in], 3)
+        var = 0
+        for neighbor in neighbors:
+            # print(neighbor)
+            near = neighbor
+            # print(abs(long_in - neighbor[1]))
+            if (abs(lat_in - neighbor[0]) > 20) or (abs(long_in - neighbor[1]) > 20):
+                var = var + .15
+            elif (abs(lat_in - neighbor[0]) > 40) or (abs(long_in - neighbor[1]) > 40):
+                var = var + .15
+            elif abs(lat_in - neighbor[0]) < 15 and abs(long_in - neighbor[1]) < 15:
+                var = var - .2
+            else:
+                var = var
+            # print(var)
 
-    neighbors = get_neighbors(coord, [lat_in, long_in], 3)
-    var = 0
-    for neighbor in neighbors:
-        print(neighbor)
-        near = neighbor
-        print(abs(long_in - neighbor[1]))
-        if (abs(lat_in - neighbor[0]) > 20) or (abs(long_in - neighbor[1]) > 20):
-            var = var + .15
-        elif (abs(lat_in - neighbor[0]) > 40) or (abs(long_in - neighbor[1]) > 40):
-            var = var + .15
-        elif abs(lat_in - neighbor[0]) < 15 and abs(long_in - neighbor[1]) < 15:
-            var = var - .2
-        else:
-            var = var
-        print(var)
+        result = modelC.predict([[lat_in, long_in]])
+        fin = assess(result, var)
 
-    #print( modelC.predict([[25.6,96]]) )
-    result = modelC.predict([[lat_in, long_in]])
-    fin = assess(result, var)
-    print(fin)
-
-    resp = jsonify(fin)
-    return resp
+        resp = jsonify(fin)
+        return resp
 
 
 if __name__ == "__main__":
