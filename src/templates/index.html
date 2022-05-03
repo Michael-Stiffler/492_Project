@@ -7,6 +7,7 @@
       name="viewport"
       content="initial-scale=1,maximum-scale=1,user-scalable=no"
     />
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -18,13 +19,14 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+    <script src="{{url_for('static', filename='main.js')}}"></script>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='css/style.css') }}"
     />
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
       <div class="container-fluid">
         <button
           class="navbar-toggler"
@@ -38,7 +40,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link" href="{{ url_for('index') }}">Home</a>
             </li>
@@ -52,5 +54,123 @@
         </div>
       </div>
     </nav>
+
+    <div class="container px-4 px-lg-5">
+      <!-- Heading Row-->
+      <div class="row gx-4 gx-lg-5 align-items-center my-5">
+        <div class="col-lg-7">
+          <img
+            id="landing-image"
+            class="img-fluid rounded mb-4 mb-lg-0"
+            src="{{ url_for('static', filename='images/landing-image.png') }}"
+          />
+        </div>
+        <div class="col-lg-5">
+          <h1 class="font-weight-light">Getting Started</h1>
+          <p>
+            Hello! We're Michael Stiffler and Daniel Wills! This is our combined
+            CIS 408 and CIS 492 project. For this project, we used NASA's data
+            set for landslides (which can be found here:
+            <u
+              ><a
+                href="https://data.nasa.gov/Earth-Science/Global-Landslide-Catalog/h9d8-neg4"
+                >Here</a
+              ></u
+            >) to predict whether or not a landslide at a user-selected area
+            would be of risk. We accomplish this using a machine learning
+            algorithm called k-nearest neighbors and our algorithm classifies a
+            location as being either <u>low-risk</u>, <u>medium-risk</u>, or
+            <u>high-risk</u>. Some of the tools we used to complete this are:
+            Javascript, Python, HTML, P5, AJAX, Flask, SQL, Leaflet,
+            Scikit-learn, Waitress, and much more!
+          </p>
+          <p id="card-text"></p>
+        </div>
+      </div>
+      <div class="row gx-4 gx-lg-5">
+        <div class="col-md-4 mb-5">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="card-title">Tutorial</h2>
+              <p class="card-text">
+                When you're under the "Predict" tab and you would like to run
+                the model, you can hold down <u>CONTROL</u> followed by a
+                <u>LEFT-CLICK</u> to select a location. After a few seconds, the
+                model will return the prediction for the selected location with
+                a marker.
+              </p>
+            </div>
+            <div class="card-footer"></div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-5">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="card-title">Predict</h2>
+              <p class="card-text">
+                The "Predict" tab is used to run the k-nearest neighbors
+                algorithm via a user-selected location (see Tutorial). Along
+                with this, the landslides from the data set will be shown will
+                their related information.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary btn-sm" href="{{ url_for('predict') }}"
+                >Take Me There!</a
+              >
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-5">
+          <div class="card h-100">
+            <div class="card-body">
+              <h2 class="card-title">Sandbox</h2>
+              <p class="card-text">
+                The "Sandbox" tab is a model-free space where the user can
+                explore the map however they would like. This mode enables
+                dragging so it's easier to navigate the map and explore each of
+                the locations where there is a landslide.
+              </p>
+            </div>
+            <div class="card-footer">
+              <a class="btn btn-primary btn-sm" href="{{ url_for('sandbox') }}"
+                >Take Me There!</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <table class="table table-striped table-light">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Precision</th>
+            <th scope="col">Recall</th>
+            <th scope="col">F1-score</th>
+            <th scope="col">Support</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="0">
+            <th scope="row">0 (low-risk)</th>
+          </tr>
+          <tr id="1">
+            <th scope="row">1 (medium-risk)</th>
+          </tr>
+          <tr id="2">
+            <th scope="row">2 (high-risk)</th>
+          </tr>
+          <tr id="accr">
+            <th scope="row">Accuracy</th>
+          </tr>
+          <tr id="mavg">
+            <th scope="row">Macro Avg</th>
+          </tr>
+          <tr id="wavg">
+            <th scope="row">Weighted Avg</th>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </body>
 </html>

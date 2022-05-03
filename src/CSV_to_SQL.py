@@ -13,6 +13,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd  # for data manipulation
 import numpy as np  # for data manipulation
 import os
+import json
 
 # for splitting the data into train and test samples
 from sklearn.model_selection import train_test_split
@@ -30,8 +31,16 @@ from sqlite3 import Cursor
 database = "Stiffler_DB"
 server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
 
-#database = "WILLS_DB"
-#server = 'DESKTOP-TUJPIMN'
+# database = "WILLS_DB"
+# server = 'DESKTOP-TUJPIMN'
+
+
+def return_model_data():
+    return model_data
+
+
+def return_landslide_json():
+    return landslide_json
 
 
 def connect_sql():
@@ -222,6 +231,7 @@ cursor.execute(switchdb)
 
 # reads in the table from the databse
 df4 = pd.read_sql('SELECT * FROM landslide', connect)
+landslide_json = json.loads(df4.to_json(orient="split"))
 
 # redoes the coordinates for nearest neighbor
 lat = df4["latitude"]
@@ -239,7 +249,7 @@ df4['latitude scl'] = scaler.fit_transform(df4[['latitude']])
 df4['longitude scl'] = scaler.fit_transform(df4[['longitude']])
 
 # Split into train and test dataframes
-df_train, df_test = train_test_split(df4, test_size=0.2, random_state=42)
+df_train, df_test = train_test_split(df4, test_size=0.3)
 
 # independent varibales
 X_train2 = df_train[['latitude scl', 'longitude scl']]
@@ -319,6 +329,13 @@ scoreC_te = modelC.score(X_test2, yC_test)
 print('Accuracy Score: ', scoreC_te)
 # Look at classification report to evaluate the model
 print(classification_report(yC_test, pred_labels_te))
+
+report = classification_report(yC_test, pred_labels_te, output_dict=True)
+df = pd.DataFrame(report).transpose()
+result = df.to_json(orient="split")
+model_data = json.loads(result)
+model_data["accuracy"] = scoreC_te
+print(model_data)
 print('--------------------------------------------------------')
 print("")
 

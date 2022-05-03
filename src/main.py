@@ -28,7 +28,7 @@ from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 import pyodbc
 from sqlite3 import Cursor
 from sqlite3 import connect
-from CSV_to_SQL import coord, modelR, modelC
+from CSV_to_SQL import coord, modelR, modelC, return_landslide_json, return_model_data
 
 
 # assesses the final number and assigns a risk level
@@ -87,6 +87,16 @@ def predict():
 @app.route("/sandbox")
 def sandbox():
     return render_template('/sandbox.html')
+
+
+@app.route("/getlandslide", methods=['GET', 'POST'])
+def getlandslide():
+    return jsonify(return_landslide_json())
+
+
+@app.route("/getmodeldata", methods=['GET', 'POST'])
+def getmodeldata():
+    return jsonify(return_model_data())
 
 
 @app.route('/datapull', methods=['GET', 'POST'])

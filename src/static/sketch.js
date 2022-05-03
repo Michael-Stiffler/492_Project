@@ -4,9 +4,18 @@ var userMarker;
 var markers;
 var userLat = 0;
 var userLon = 0;
+var landslide;
 
 function preload(){
-    loadedData = loadTable('static/data/Global_Landslide_Catalog_Export_stripped.csv', 'header');
+    var AJAXtojson = $.ajax({
+        type: 'GET',
+        url: '/getlandslide',
+        async: false,
+        success: function(response) { 
+            landslide = JSON.parse(JSON.stringify(response));
+        },
+        contentType: "application/json",
+    });
 }
 
 function setup() {
@@ -45,17 +54,17 @@ function setup() {
         map.removeLayer(markers);
     }).addTo(map);
 
-    for(let row of loadedData.rows){
-        var lat = row.get("latitude");
-        var lon = row.get("longitude");
+    for (var i = 0; i < landslide["data"].length; i++){
+        var lat = landslide["data"][i][8];
+        var lon = landslide["data"][i][7];
 
-        var date = row.get("date");
-        var country =  row.get("country_name");
-        var type = row.get("type");
-        var trigger = row.get("landslide_trigger");
-        var fatalities = row.get("fatality_count");
-        var injuries = row.get("injuries");
-        var size = row.get("landslide_size");
+        var date = landslide["data"][i][2];
+        var country =  landslide["data"][i][3];
+        var type = landslide["data"][i][6];
+        var trigger = landslide["data"][i][4];
+        var fatalities = landslide["data"][i][1];
+        var injuries = landslide["data"][i][5];
+        var size = landslide["data"][i][0];
 
         if(injuries === ""){
             injuries = 0;
