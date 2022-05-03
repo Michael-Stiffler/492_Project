@@ -126,8 +126,8 @@ def datapull():
                 var = var + .41
             elif abs(lat_in - neighbor[0]) < 13.9 and abs(long_in - neighbor[1]) < 13.9:
                 var = var - .225
-            elif abs(lat_in - neighbor[0]) < 2.8 and abs(long_in - neighbor[1]) < 2.8:
-                var = var - .41
+            elif abs(lat_in - neighbor[0]) < 3.3 and abs(long_in - neighbor[1]) < 3.3:
+                var = var - .4
             else:
                 var = var
             # print(var)
