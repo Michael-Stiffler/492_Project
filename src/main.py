@@ -120,12 +120,14 @@ def datapull():
             # print(neighbor)
             near = neighbor
             # print(abs(long_in - neighbor[1]))
-            if (abs(lat_in - neighbor[0]) > 20) or (abs(long_in - neighbor[1]) > 20):
-                var = var + .15
-            elif (abs(lat_in - neighbor[0]) > 40) or (abs(long_in - neighbor[1]) > 40):
-                var = var + .15
-            elif abs(lat_in - neighbor[0]) < 15 and abs(long_in - neighbor[1]) < 15:
-                var = var - .2
+            if (abs(lat_in - neighbor[0]) > 5.8) or (abs(long_in - neighbor[1]) > 5.8):
+                var = var + .225
+            elif (abs(lat_in - neighbor[0]) > 13.8999) or (abs(long_in - neighbor[1]) > 13.8999):
+                var = var + .41
+            elif abs(lat_in - neighbor[0]) < 13.9 and abs(long_in - neighbor[1]) < 13.9:
+                var = var - .225
+            elif abs(lat_in - neighbor[0]) < 2.8 and abs(long_in - neighbor[1]) < 2.8:
+                var = var - .41
             else:
                 var = var
             # print(var)
