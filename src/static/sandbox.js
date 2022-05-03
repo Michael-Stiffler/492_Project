@@ -72,7 +72,7 @@ function setup() {
         var injuries = landslide["data"][i][5];
         var size = landslide["data"][i][0];
 
-        if(injuries === ""){
+        if(injuries === NaN){
             injuries = 0;
         }
 

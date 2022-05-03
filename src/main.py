@@ -24,11 +24,13 @@ from sklearn.preprocessing import MinMaxScaler  # for feature scaling
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.neighbors import KNeighborsClassifier  # for KNN classification
 from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
+from datetime import datetime
+from geopy.geocoders import Nominatim
 
 import pyodbc
 from sqlite3 import Cursor
 from sqlite3 import connect
-from CSV_to_SQL import coord, modelR, modelC, return_landslide_json, return_model_data
+from CSV_to_SQL import coord, modelR, modelC, return_landslide_json, return_model_data, add_marker_to_SQL, return_results_data
 
 
 # assesses the final number and assigns a risk level
@@ -89,6 +91,11 @@ def sandbox():
     return render_template('/sandbox.html')
 
 
+@app.route("/results")
+def results():
+    return render_template('/results.html')
+
+
 @app.route("/getlandslide", methods=['GET', 'POST'])
 def getlandslide():
     return jsonify(return_landslide_json())
@@ -96,6 +103,40 @@ def getlandslide():
 
 @app.route("/getmodeldata", methods=['GET', 'POST'])
 def getmodeldata():
+    return jsonify(return_model_data())
+
+
+@app.route("/getresults", methods=['GET', 'POST'])
+def getresults():
+    return jsonify(return_results_data())
+
+
+@app.route("/sendtosql", methods=['GET', 'POST'])
+def sendtosql():
+    if request.method == 'POST':
+        geolocator = Nominatim(user_agent="geoapiExercises")
+
+        data = request.form['data']
+        result = request.form['result']
+
+        x = data.split("#", 1)
+        lat_in = float(x[0])
+        long_in = float(x[1])
+
+        now = datetime.now()
+        formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+
+        location = geolocator.reverse(str(lat_in)+","+str(long_in))
+        address = location.raw['address']
+
+        city = address.get('city', '')
+        state = address.get('state', '')
+        country = address.get('country', '')
+        zipcode = address.get('postcode')
+
+        add_marker_to_SQL(formatted_date, lat_in, long_in,
+                          city, state, country, zipcode, result)
+
     return jsonify(return_model_data())
 
 

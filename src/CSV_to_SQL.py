@@ -35,6 +35,31 @@ server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
 # server = 'DESKTOP-TUJPIMN'
 
 
+def add_marker_to_SQL(formatted_date, lat_in, long_in,
+                      city, state, country, zipcode, result):
+    connect = pyodbc.connect(
+        "DRIVER={SQL Server};SERVER="+server+";Trusted_Connection=yes;")
+    connect.autocommit = True
+    cursor = connect.cursor()
+
+    # Create database
+    createdb = "IF DB_ID('"+database+"') IS NULL CREATE DATABASE "+database+";"
+    cursor.execute(createdb)
+
+    # Switches to new database
+    switchdb = "USE "+database+";"
+    cursor.execute(switchdb)
+
+    cursor.execute("INSERT INTO results (date,lat,lon,city,state,country,zipcode,result) VALUES('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')".format(
+        formatted_date, lat_in, long_in, city, state, country, zipcode, result))
+
+
+def return_results_data():
+    data_frame = pd.read_sql('SELECT * FROM results', connect)
+    results_json = json.loads(data_frame.to_json(orient="split"))
+    return results_json
+
+
 def return_model_data():
     return model_data
 

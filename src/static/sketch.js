@@ -66,7 +66,7 @@ function setup() {
         var injuries = landslide["data"][i][5];
         var size = landslide["data"][i][0];
 
-        if(injuries === ""){
+        if(injuries === NaN){
             injuries = 0;
         }
 
@@ -115,6 +115,7 @@ function mouseClicked() {
 function runPyScript(){
 
     var input = userLat + "#" + userLon;
+    var modelResult;
 
     var AJAXtoFlask = $.ajax({
         type: "POST",
@@ -123,9 +124,20 @@ function runPyScript(){
         data: { data: input },
         success: function(result) {
             console.log(result);
+            modelResult = result;
             userMarker = L.marker(new L.LatLng(userLat, userLon), {}).addTo(map)
             .bindPopup("User Selected Location: <br>Lat: " + userLat + "<br>Lon: " + userLon + "<br>Is: " + result)
             .openPopup();
+
+            var AJAXtoFlask = $.ajax({
+                type: "POST",
+                url: "/sendtosql",
+                async: true,
+                data: { data: input, result: modelResult},
+                success: function(response) {
+                    console.log(response + "Added to database!");
+                } 
+            });
         } 
     });
 }
