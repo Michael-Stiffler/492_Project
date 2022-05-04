@@ -55,7 +55,7 @@ def add_marker_to_SQL(formatted_date, lat_in, long_in,
 
 
 def return_results_data():
-    data_frame = pd.read_sql('SELECT * FROM results', connect)
+    data_frame = pd.read_sql('SELECT * FROM results ORDER BY date', connect)
     results_json = json.loads(data_frame.to_json(orient="split"))
     return results_json
 
@@ -137,7 +137,6 @@ else:
     size_array = []
     fat_array = []
     for word in landslide1:
-        # print(word)
         if word == 'small':
             word = 0
             size_array.append(word)
