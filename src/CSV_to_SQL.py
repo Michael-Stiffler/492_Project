@@ -28,6 +28,9 @@ from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 import pyodbc
 from sqlite3 import Cursor
 
+# database = "Database here"
+# server = "Sever name here"
+
 database = "Stiffler_DB"
 server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
 
@@ -279,27 +282,20 @@ df_train, df_test = train_test_split(df4, test_size=0.3)
 X_train2 = df_train[['latitude scl', 'longitude scl']]
 X_test2 = df_test[['latitude scl', 'longitude scl']]
 
-
 # Target for classification model
 yC_train = df_train['classification'].ravel()
 yC_test = df_test['classification'].ravel()
+
 # Target for regression model
 yR_train = df_train['classification'].ravel()
 yR_test = df_test['classification'].ravel()
 
-
 # ---------- Step 3a - Set model parameters - Classification
 modelC = KNeighborsClassifier(n_neighbors=5,  # default=5
-                              # {‘uniform’, ‘distance’} or callable, default='uniform'
                               weights='distance',
-                              # {‘auto’, ‘ball_tree’, ‘kd_tree’, ‘brute’}, default=’auto’
                               algorithm='ball_tree',
-                              # leaf_size=30, #default=30, Leaf size passed to BallTree or KDTree.
-                              # p=2, #default=2, Power parameter for the Minkowski metric.
-                              # metric='minkowski', #default=’minkowski’, with p=2 is equivalent to the standard Euclidean metric.
-                              # dict, default=None, Additional keyword arguments for the metric function.
                               metric_params=None,
-                              n_jobs=-1  # default=None, The number of parallel jobs to run for neighbors search, -1 means using all processors
+                              n_jobs=-1
                               )
 
 modelR = KNeighborsRegressor(n_neighbors=10,  # default=5
