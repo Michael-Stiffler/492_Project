@@ -28,11 +28,11 @@ from sklearn.neighbors import KNeighborsRegressor  # for KNN regression
 import pyodbc
 from sqlite3 import Cursor
 
-# database = "Database here"
-# server = "Sever name here"
+database = "Database here"
+server = "Sever name here"
 
-database = "Stiffler_DB"
-server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
+# database = "Stiffler_DB"
+# server = 'DESKTOP-2N4AS7M\SQLEXPRESS'
 
 # database = "WILLS_DB"
 # server = 'DESKTOP-TUJPIMN'
